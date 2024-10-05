@@ -1,5 +1,4 @@
-# imports
-
+import functions_framework
 from google.cloud import secretmanager
 from google.cloud import storage
 import requests
@@ -7,15 +6,6 @@ import feedparser
 import json
 import datetime
 import uuid
-
-# settings
-project_id = 'ba882-victorgf'
-secret_id = 'mother_duck'   #<---------- this is the name of the secret you created
-version_id = 'latest'
-bucket_name = 'ba882-victorgf-awsblogs'
-
-
-####################################################### helpers
 
 def upload_to_gcs(bucket_name, job_id, data):
     """Uploads data to a Google Cloud Storage bucket."""
@@ -30,69 +20,71 @@ def upload_to_gcs(bucket_name, job_id, data):
 
     return {'bucket_name':bucket_name, 'blob_name': blob_name}
 
-
-####################################################### core task
-
 @functions_framework.http
 def task(request):
-
-    # job_id
+    print("Function has been triggered")
     job_id = datetime.datetime.now().strftime("%Y%m%d%H%M") + "-" + str(uuid.uuid4())
+    print(f"Generated job_id: {job_id}")
 
-    # instantiate the services 
-    sm = secretmanager.SecretManagerServiceClient()
-    storage_client = storage.Client()
+    try:
+        # Instantiate the services
+        sm = secretmanager.SecretManagerServiceClient()
+        storage_client = storage.Client()
 
-    # Build the resource name of the secret version
-    name = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
+        # Access the secret version
+        name = f"projects/ba882-victorgf/secrets/mother_duck/versions/latest"
+        response = sm.access_secret_version(request={"name": name})
+        md_token = response.payload.data.decode("UTF-8")
+        print("Secret accessed successfully")
+    except Exception as e:
+        print(f"Error accessing Secret Manager: {e}")
+        return {"error": "Failed to access secret"}, 500
 
-    # Access the secret version
-    response = sm.access_secret_version(request={"name": name})
-    md_token = response.payload.data.decode("UTF-8")
+    try:
+        # Get RSS feeds
+        feeds = [
+            'https://aws.amazon.com/blogs/big-data/feed/',
+            'https://aws.amazon.com/blogs/compute/feed/',
+            'https://aws.amazon.com/blogs/database/feed/',
+            'https://aws.amazon.com/blogs/machine-learning/feed/',
+            'https://aws.amazon.com/blogs/containers/feed/',
+            'https://aws.amazon.com/blogs/infrastructure-and-automation/feed/',
+            'https://aws.amazon.com/blogs/aws/feed/',
+            'https://aws.amazon.com/blogs/business-intelligence/feed/',
+            'https://aws.amazon.com/blogs/storage/feed/'
+        ]
 
-    ####################################### get the feeds
+        feed_list = []
+        for feed in feeds:
+            try:
+                print(f"Fetching feed: {feed}")
+                r = requests.get(feed)
+                feed = feedparser.parse(r.content)
+                print(f"Successfully fetched and parsed feed: {feed.feed.title}")
+                feed_list.append(feed)
+            except Exception as e:
+                print(f"Error fetching or parsing feed {feed}: {e}")
+                raise
 
-    feeds = [
-        'https://aws.amazon.com/blogs/big-data/feed/',
-        'https://aws.amazon.com/blogs/compute/feed/',
-        'https://aws.amazon.com/blogs/database/feed/',
-        'https://aws.amazon.com/blogs/machine-learning/feed/',
-        'https://aws.amazon.com/blogs/containers/feed/',
-        'https://aws.amazon.com/blogs/infrastructure-and-automation/feed/',
-        'https://aws.amazon.com/blogs/aws/feed/',
-        'https://aws.amazon.com/blogs/business-intelligence/feed/',
-        'https://aws.amazon.com/blogs/storage/feed/'
-    ]
+        # Process feeds
+        entries = []
+        for feed in feed_list:
+            entries.extend(feed.entries)
+        print(f"Total entries extracted: {len(entries)}")
 
-    feed_list = []
-    for feed in feeds:
-        try:
-            r = requests.get(feed)
-            feed = feedparser.parse(r.content)
-            print(feed.feed.title)
-            feed_list.append(feed)
-        except Exception as e:
-            print(e)
-            raise
+        # Serialize entries to JSON
+        entries_json = json.dumps(entries)
 
-    print(f"The length of the feed list is {len(feed_list)}")
-
-
-    # flatten
-    entries = []
-    for feed in feed_list:
-        entries.extend(feed.entries)
-    print(f"There are {len(entries)} post entries")
-
-    # to a json string
-    entries_json = json.dumps(entries)
-
-    # write to gcs
-    gcs_path = upload_to_gcs(bucket_name, job_id, entries_json)
+        # Write to GCS
+        gcs_path = upload_to_gcs(bucket_name, job_id, entries_json)
+        print(f"Data uploaded to GCS: {gcs_path}")
+    except Exception as e:
+        print(f"Error during processing: {e}")
+        return {"error": "Failed to process and upload feeds"}, 500
 
     return {
-        "num_entries": len(entries), 
-        "job_id": job_id, 
-        "bucket_name":gcs_path.get('bucket_name'),
+        "num_entries": len(entries),
+        "job_id": job_id,
+        "bucket_name": gcs_path.get('bucket_name'),
         "blob_name": gcs_path.get('blob_name')
     }, 200

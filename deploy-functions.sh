@@ -38,7 +38,7 @@ gcloud functions deploy dev-extract-rss \
     --service-account etl-pipeline@ba882-victorgf.iam.gserviceaccount.com \
     --region us-central1 \
     --allow-unauthenticated \
-    --memory 256MB 
+    --memory 512MB 
 
 # parse rss
 echo "======================================================"
