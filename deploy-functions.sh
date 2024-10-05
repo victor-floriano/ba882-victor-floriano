@@ -4,7 +4,7 @@
 ######
 
 # setup the project
-gcloud config set project YOUR_PROJECT_SHOULD_GO_HERE
+gcloud config set project ba882-victorgf
 
 # schema setup
 echo "======================================================"
