@@ -7,6 +7,15 @@ import json
 import datetime
 import uuid
 
+# settings
+project_id = 'ba882-victorgf'
+secret_id = 'mother_duck'   #<---------- this is the name of the secret you created
+version_id = 'latest'
+bucket_name = 'ba882-victorgf-awsblogs'
+
+
+####################################################### helpers
+
 def upload_to_gcs(bucket_name, job_id, data):
     """Uploads data to a Google Cloud Storage bucket."""
     client = storage.Client()
