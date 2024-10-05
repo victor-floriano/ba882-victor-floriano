@@ -12,7 +12,7 @@ import uuid
 project_id = 'ba882-victorgf'
 secret_id = 'mother_duck'   #<---------- this is the name of the secret you created
 version_id = 'latest'
-bucket_name = 'btibert-ba882-fall24-awsblogs'
+bucket_name = 'ba882-victorgf-awsblogs'
 
 
 ####################################################### helpers
