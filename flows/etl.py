@@ -15,28 +15,28 @@ def invoke_gcf(url:str, payload:dict):
 @task(retries=2)
 def schema_setup():
     """Setup the stage schema"""
-    url = "https://us-central1-btibert-ba882-fall24.cloudfunctions.net/dev-schema-setup"
+    url = "https://us-central1-ba882-victorgf.cloudfunctions.net/dev-schema-setup"
     resp = invoke_gcf(url, payload={})
     return resp
 
 @task(retries=2)
 def extract():
     """Extract the RSS feeds into JSON on GCS"""
-    url = "https://us-central1-btibert-ba882-fall24.cloudfunctions.net/dev-extract-rss"
+    url = "https://us-central1-ba882-victorgf.cloudfunctions.net/dev-extract-rss"
     resp = invoke_gcf(url, payload={})
     return resp
 
 @task(retries=2)
 def transform(payload):
     """Process the RSS feed JSON into parquet on GCS"""
-    url = "https://us-central1-btibert-ba882-fall24.cloudfunctions.net/dev-parse-rss"
+    url = "https://us-central1-ba882-victorgf.cloudfunctions.net/dev-parse-rss"
     resp = invoke_gcf(url, payload=payload)
     return resp
 
 @task(retries=2)
 def load(payload):
     """Load the tables into the raw schema, ingest new records into stage tables"""
-    url = "https://us-central1-btibert-ba882-fall24.cloudfunctions.net/dev-load-rss"
+    url = "https://us-central1-ba882-victorgf.cloudfunctions.net/dev-load-rss"
     resp = invoke_gcf(url, payload=payload)
     return resp
 
