@@ -1,0 +1,108 @@
+---
+title: "Diamonds Dataset Analysis"
+format:
+  revealjs:
+    embed-resources: true
+---
+
+```{python}
+#| echo: false
+
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+url = "https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2/diamonds.csv"
+df = pd.read_csv(url)
+```
+
+
+## Outline
+- Introduction
+- Exploratory Data Analysis
+  - Price Distribution
+  - Carat vs Price
+  - Cut Distribution
+- Detailed Analysis
+  - Color vs Price
+  - Clarity vs Price
+- Conclusion
+
+## Price Distribution
+```{python}
+plt.figure(figsize=(10, 6))
+sns.histplot(df['price'], bins=30, kde=True)
+plt.title('Price Distribution')
+plt.xlabel('Price')
+plt.ylabel('Frequency')
+plt.grid(True)
+plt.show()
+```
+
+
+## Carat vs Price
+```{python}
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x='carat', y='price', data=df, alpha=0.5)
+plt.title('Carat vs Price')
+plt.xlabel('Carat')
+plt.ylabel('Price')
+plt.grid(True)
+plt.show()
+```
+
+## Cut Distribution
+```{python}
+plt.figure(figsize=(10, 6))
+sns.countplot(x='cut', data=df, order=df['cut'].value_counts().index)
+plt.title('Cut Distribution')
+plt.xlabel('Cut')
+plt.ylabel('Count')
+plt.grid(True)
+plt.show()
+```
+
+## Color vs Price {.smaller}
+:::{columns}
+::: {.column width="20%"}
+```{python}
+#| echo: false
+
+plt.figure(figsize=(2,2))
+sns.boxplot(x='color', y='price', data=df, order=df['color'].value_counts().index)
+plt.title('Color vs Price')
+plt.xlabel('Color')
+plt.ylabel('Price')
+plt.grid(True)
+plt.show()
+```
+:::
+::: {.column width="80%"}
+
+### Discussion
+- **Color Impact**: The plot shows how the color grade affects the price of diamonds.
+- **Trend**: Generally, there is a variation in price across different color grades, but the trend is not strictly linear.
+- **Outliers**: Noticeable outliers for certain colors, indicating high-value diamonds in those categories.
+
+:::
+:::
+
+## Clarity vs Price
+```{python}
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='clarity', y='price', data=df, order=df['clarity'].value_counts().index)
+plt.title('Clarity vs Price')
+plt.xlabel('Clarity')
+plt.ylabel('Price')
+plt.grid(True)
+plt.show()
+```
+
+# Conclusion
+- The dataset reveals significant insights into the diamond market.
+- Price distribution is right-skewed, indicating a majority of diamonds fall within the lower price range.
+- Carat weight has a positive correlation with price.
+- Different diamond cuts have varying distributions and can influence the price.
+- Both color and clarity have noticeable impacts on the price, though with distinct patterns.
