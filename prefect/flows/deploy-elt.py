@@ -6,7 +6,7 @@ if __name__ == "__main__":
         entrypoint="prefect/flows/etl.py:etl_flow",
     ).deploy(
         name="aws-blogs-etl",
-        work_pool_name="brock-worker1",
+        work_pool_name="victor-pool1",
         job_variables={"env": {"BROCK": "loves-to-code"},
                        "pip_packages": ["pandas", "requests"]},
         cron="15 0 * * *",
