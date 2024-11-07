@@ -39,3 +39,38 @@ gcloud functions deploy mlops-postlength-trainer \
     --region us-central1 \
     --allow-unauthenticated \
     --memory 1GB
+
+# the predictions function
+echo "======================================================"
+echo "dynamic prediction endpoint"
+echo "======================================================"
+
+gcloud functions deploy mlops-postlength-prediction \
+    --gen2 \
+    --runtime python311 \
+    --trigger-http \
+    --entry-point task \
+    --source ./functions/prediction \
+    --stage-bucket ba882-victorgf-stage-bucket \
+    --service-account etl-pipeline@ba882-victorgf.iam.gserviceaccount.com \
+    --region us-central1 \
+    --allow-unauthenticated \
+    --memory 1GB
+
+
+# the offline batch function
+echo "======================================================"
+echo "bulk/batch prediction job"
+echo "======================================================"
+
+gcloud functions deploy mlops-postlength-batch \
+    --gen2 \
+    --runtime python311 \
+    --trigger-http \
+    --entry-point task \
+    --source ./functions/batch \
+    --stage-bucket ba882-victorgf-stage-bucket \
+    --service-account etl-pipeline@ba882-victorgf.iam.gserviceaccount.com \
+    --region us-central1 \
+    --allow-unauthenticated \
+    --memory 1GB
