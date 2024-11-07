@@ -3,14 +3,14 @@ from prefect import flow
 if __name__ == "__main__":
     flow.from_source(
         source="https://github.com/victor-floriano/ba882-victor-floriano.git",
-        entrypoint="prefect/flows/etl.py:etl_flow",
+        entrypoint="prefect/flows/ml-views.py:ml_datasets",
     ).deploy(
-        name="aws-blogs-etl",
+        name="ml-datasets",
         work_pool_name="victor-pool1",
         job_variables={"env": {"ENVIRONMENT": "production"},
             "pip_packages": ["pandas", "requests"]},
-        cron="15 0 * * *",
+        cron="20 0 * * *",
         tags=["prod"],
-        description="The pipeline to populate the stage schema with the newest posts.  Version is just for illustration",
-        version="1.0.1",
+        description="The pipeline to create ML datasets off of the staged data.  Version is just for illustration",
+        version="1.0.0",
     )
