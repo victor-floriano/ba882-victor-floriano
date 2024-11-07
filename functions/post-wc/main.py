@@ -16,7 +16,7 @@ secret_id = 'mother_duck'   #<---------- this is the name of the secret you crea
 version_id = 'latest'
 bucket_name = 'ba882-victorgf-awsblogs'
 ml_bucket_name = 'ba882-victorgf-vertex-models'
-ml_dataset_path = 'training-data/post-length/'
+ml_dataset_path = '/training-data/post-length/'
 
 # db setup
 db = 'awsblogs'
