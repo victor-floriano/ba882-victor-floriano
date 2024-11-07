@@ -3,5 +3,5 @@ workerPoolSpecs:
       machineType: e2-standard-4
     replicaCount: 1
     containerSpec:
-      imageUri: gcr.io/your-project/post-length-train:latest
+      imageUri: gcr.io/ba882-victorgf/post-length-train:latest
 serviceAccount: etl-pipeline@ba882-victorgf.iam.gserviceaccount.com
