@@ -22,7 +22,7 @@ ml_dataset_path = '/training-data/post-tags/'
 db = 'awsblogs'
 stage_db_schema = f"{db}.stage"
 ml_schema = f"{db}.ml"
-ml_view_name = "post-tags"
+ml_view_name = "post_tags"
 
 
 ingest_timestamp = pd.Timestamp.now()
