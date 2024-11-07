@@ -14,14 +14,14 @@ def invoke_gcf(url:str, payload:dict):
 @task(retries=2)
 def post_length():
     """Setup the stage schema"""
-    url = "https://us-central1-btibert-ba882-fall24.cloudfunctions.net/ml-post-length"
+    url = "https://ml-post-length-548628906045.us-central1.run.app"
     resp = invoke_gcf(url, payload={})
     return resp
 
 @task(retries=2)
 def post_tags():
     """Extract the RSS feeds into JSON on GCS"""
-    url = "https://us-central1-btibert-ba882-fall24.cloudfunctions.net/ml-post-tags"
+    url = "https://ml-post-tags-548628906045.us-central1.run.app"
     resp = invoke_gcf(url, payload={})
     return resp
 
