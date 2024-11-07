@@ -16,8 +16,8 @@ gcloud functions deploy ml-post-tags \
     --service-account etl-pipeline@ba882-victorgf.iam.gserviceaccount.com \
     --region us-central1 \
     --allow-unauthenticated \
-    --memory 512MB  \
-    --timeout 300s 
+    --memory 1024MB  \
+    --timeout 600s 
 
 
 # load the feeds into raw and changes into stage
